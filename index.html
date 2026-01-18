@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>SAT4NIC V4.3</title>
+
+<!-- Tambahan biar full Android mode -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+
+<style>
+/* --- CSS FIX --- */
+body {
+  font-family: Arial, sans-serif;
+  background: #000;
+  margin: 0;
+  padding: 0;
+}
+
+background: #fff;
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+color: #222;
+    }
+    .header {
+background: #b30000;
+color: #fff;
+padding: 12px;
+font-weight: bold;
+font-size: 20px;
+    }
+    .header span {
+margin-left: 8px;
+    }
+    .section {
+border-left: 4px solid #007bff;
+padding: 10px 15px;
+margin: 15px;
+background: #f5f5f5;
+border-radius: 6px;
+    }
+    .title {
+font-weight: bold;
+color: #007bff;
+margin-bottom: 6px;
+    }
+    .row {
+margin: 4px 0;
+    }
+    .row span {
+font-weight: bold;
+    }
+    .payment {
+border-left: 4px solid #000;
+margin: 15px;
+padding: 10px 15px;
+border-radius: 6px;
+background: #fafafa;
+    }
+    .app {
+border: 1px solid #ddd;
+padding: 8px;
+border-radius: 6px;
+margin: 6px 0;
+background: #fff;
+    }
+    .footer {
+text-align: center;
+font-size: 12px;
+color: #555;
+margin: 20px 0;
+    }
+.fixed-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  z-index: 10;
+  height: 62px;
+  box-sizing: border-box;
+}
+
+.logo-title { display: flex; align-items: center; }
+.logo {
+  width: 40px; height: 40px;
+  background: radial-gradient(circle, #000 30%, #ccc 100%);
+  border-radius: 50%; margin-right: 10px;
+}
+.title-text h2 { margin: 0; font-size: 18px; color: #222; }
+.title-text small { font-size: 12px; color: gray; }
+.connected-box {
+  background-color: #004080; color: white;
+  padding: 6px 12px; border-radius: 5px;
+  font-size: 13px; font-weight: bold;
+}
+
+/* layar */
+.screen {
+  display: none;
+  flex-direction: column;
+  text-align: center;
+  min-height: calc(100vh - 62px);
+  background: white;
+  padding-bottom: 20px;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.show { 
+  display: flex; 
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* loading */
+.loading {
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.loading h1 {
+  font-size: 100px; font-weight: 900;
+  font-family: monospace, Arial, sans-serif;
+  color: red; margin: 0; letter-spacing: 5px;
+}
+.loading p { font-size: 18px; color: #333; }
+
+/* panel */
+.panel {
+  background: #fff; width: 100%;
+  padding: 20px; box-sizing: border-box;
+  opacity: 0; flex: 1;
+  display: flex; flex-direction: column;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(30px);
+}
+.panel.show-panel {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* tombol */
+.buttons { display: flex; flex-wrap: wrap; justify-content: space-between; margin-top: 20px; }
+.buttons button {
+  width: 48%; margin: 5px 0; padding: 12px;
+  border: none; color: white; font-weight: bold;
+  border-radius: 5px; cursor: pointer;
+  font-size: 14px; transition: transform 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.buttons button:hover { transform: scale(1.03); }
+.screenshot,.keylogger,.rekam-audio,.rekam-kamera,.refresh,.riwayat { background-color: #004080; }
+.enkripsi { background-color: #cc0000; }
+.transfer { background-color: #339933; }
+
+/* status + info */
+.status-box {
+  background-color: #ffe6e6; color: red;
+  font-weight: bold; padding: 10px;
+  margin-bottom: 20px; border-radius: 5px;
+  font-size: 14px;
+}
+.info { text-align: left; margin-top: 10px; font-size: 12px; color: #666; }
+
+/* fake data */
+.fake-data {
+  margin-top: 20px; text-align: left;
+  font-size: 14px; color: #333;
+  background: #fafafa; padding: 15px;
+  border-radius: 12px; border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+.fake-data ul { list-style: none; padding: 0; margin: 0; }
+.fake-data .box {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg,#ffffff,#f1f1f1);
+  border: 1px solid #ddd; padding: 12px;
+  border-radius: 10px; margin-bottom: 12px;
+  font-weight: bold; color: #111;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.fake-data .box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+}
+.fake-data .icon {
+  width: 24px; height: 24px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+.fake-data .line {
+  border-top: 2px dashed #bbb;
+  margin: 14px 0; padding-top: 10px;
+  font-weight: bold; color: #444;
+}
+
+/* payment tracker */
+.payment {
+  border-left: 4px solid #000;
+  margin: 20px 0;
+  padding: 12px 15px;
+  border-radius: 6px;
+  background: #fafafa;
+}
+.payment .title {
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+.payment .app {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 6px 0;
+  background: #fff;
+}
+
+/* copyright */
+.copyright {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #aaa;
+  text-align: center;
+}
+.btn-icon { width: 16px; height: 16px; fill: white; }
+</style>
+</head>
+<body>
+
+<div class="fixed-top-bar">
+  <div class="logo-title">
+    <div class="logo"></div>
+    <div class="title-text">
+      <h2>Lumma V5.2</h2>
+      <small>Advanced Monitoring System</small>
+    </div>
+  </div>
+  <div class="connected-box">Connected</div>
+</div>
+
+<div id="loadingScreen" class="screen loading show">
+  <h1>404</h1>
+  <p>Memuat data target...</p>
+</div>
+
+<div id="panelScreen" class="screen">
+  <div id="mainPanel" class="panel">
+    <div class="buttons">
+      <button class="screenshot"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/></svg>Screenshot</button>
+      <button class="keylogger"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/></svg>Keylogger</button>
+      <button class="rekam-audio"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 3v18"/></svg>Rekam Audio</button>
+      <button class="rekam-kamera"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/></svg>Rekam Kamera</button>
+      <button class="enkripsi"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>Enkripsi Data</button>
+      <button class="transfer"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 2l6 6-6 6-6-6z"/></svg>Transfer Dana</button>
+      <button class="refresh"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M12 4v8l4-4-4-4z"/></svg>Refresh</button>
+      <button class="riwayat"><svg class="btn-icon" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/></svg>Riwayat</button>
+    </div>
+
+    <!-- Bagian Informasi Perangkat -->
+
+    <div class="status-box">
+    <img src="https://img.icons8.com/ios-filled/50/fa314a/hacker.png" 
+    alt="Hacked Icon" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">
+    TARGET HACKED 
+    <br><small>Terakhir diperbarui: Rab, 20 Agu-2025 | pukul: 18.20</small>
+    </div>
+    
+      <div class="section">
+      <div class="title">Informasi Perangkat</div>
+      <div class="row"><span>OS:</span> Android 12</div>
+      <div class="row"><span>Model:</span> Oppo A17</div>
+      <div class="row"><span>Browser:</span> Chrome 114.0.5735.196</div>
+      </div>
+      
+      <div class="section">
+      <div class="title">Lokasi</div>
+      <div class="row"><span>IP:</span> 192.168.***.***</div>
+      <div class="row"><span>GPS:</span> -6.17*** , 106.82***</div>
+      <div class="row"><span>Lokasi:</span> Jakarta, Indonesia</div>
+      </div>
+      
+      <div class="section">
+      <div class="title">Informasi Jaringan</div>
+      <div class="row"><span>ISP:</span> PT Telkom Indonesia</div>
+      <div class="row"><span>WiFi:</span> HomeWiFi_5G (WPA2)</div>
+      <div class="row"><span>MAC:</span> 00:1A:2B:**:**:**</div>
+      </div>
+      
+      <div class="section">
+      <div class="title">Data Sensitif</div>
+      <div class="row"><span>Email:</span> ikyy99******@gmail.com</div>
+      <div class="row"><span>Password:</span> ********</div>
+      <div class="row"><span>Cookies:</span> 144 tersimpan</div>
+      </div>
+      
+      <div class="payment">
+      <div class="title">💵 Payment Tracker</div>
+      <div class="app">
+      <div><span>GoPay</span></div>
+      <div>Nomor Telepon: +62********</div>
+      <div>Saldo: Rp 500.000</div>
+      <div>PIN: ****</div>
+      </div>
+      <div class="app">
+      <div><span>OVO</span></div>
+      <div>Nomor Telepon: +62********</div>
+      <div>Saldo: Rp 1.200.000</div>
+      <div>PIN: ****</div>
+      </div>
+      <div class="app">
+      <div><span>DANA</span></div>
+      <div>Nomor Telepon: +62********</div>
+      <div>Saldo: Rp 850.000</div>
+      <div>PIN: ****</div>
+      </div>
+      <div class="app">
+      <div><span>BRImo</span></div>
+      <div>Bank: BRI (Bank Rakyat Indonesia)</div>
+      <div>Nomor Rekening: 1234********</div>
+      <div>Saldo: Rp 3.000.000</div>
+      <div>User ID: b*******9</div>
+      </div>
+      </div>
+      
+
+    <div class="copyright">
+      &copy; Created: Mr.vloid — All rights reserved.<br><br>
+    </div>
+  </div>
+</div>
+
+<script>
+// Transition dari loading -> panel
+setTimeout(() => {
+  const loading = document.getElementById('loadingScreen');
+  loading.classList.remove('show');
+  setTimeout(() => { loading.style.display = "none"; }, 600);
+
+  const panel = document.getElementById('panelScreen');
+  panel.classList.add('show');
+
+  const main = document.getElementById('mainPanel');
+  setTimeout(() => { main.classList.add("show-panel"); }, 400);
+}, 2000);
+
+// auto fullscreen kalau di tap
+document.addEventListener("click", () => {
+  if (document.documentElement.requestFullscreen) {
+    document.documentElement.requestFullscreen();
+  }
+}, { once: true });
+</script>
+</body>
+</html>
